@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote name="cmf" fetch="https://github.com/CMF-Phone-1" />
+  <remote name="mine" fetch="https://github.com/bbariskaratas" />
+  <remote name="lineage" fetch="https://github.com/LineageOS" />
+  <remote name="swiitch" fetch="https://github.com/swiitch-OFF-Lab" />
+  <project name="android_device_nothing_Tetris" path="device/nothing/Tetris" remote="mine" revision="infinityx" />
+  <project name="android_device_nothing_Tetris-kernel" path="device/nothing/Tetris-kernel" remote="cmf" revision="a17" />
+  <project name="proprietary_vendor_nothing_Tetris" path="vendor/nothing/Tetris" remote="cmf" revision="xylobium" />
+  <project name="android_device_mediatek_sepolicy_vndr" path="device/mediatek/sepolicy_vndr" remote="lineage" revision="lineage-24.0" />
+  <project name="android_hardware_mediatek" path="hardware/mediatek" remote="lineage" revision="lineage-24.0" />
+  <project name="hardware_dolby" path="hardware/dolby" remote="swiitch" revision="sony-A17" />
+  <project name="packages_apps_DolbyUI" path="packages/apps/DolbyUI" remote="swiitch" revision="a" />
+</manifest>
