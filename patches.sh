@@ -6,13 +6,37 @@ export GIT_AUTHOR_EMAIL="crave-patches@example.invalid"
 export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
 export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
 
-apply() {  # dizin, repo url, commit
-  if git -C "$1" log -n 300 --grep="cherry picked from commit $3" --format=%H | grep -q .; then
-    echo "SKIP (already applied): $1 $3"
-  else
-    git -C "$1" fetch "$2" "$3"
-    git -C "$1" cherry-pick -x "$3"
+apply() {  # project path, repository URL, commit SHA
+  local project="$1"
+  local repository="$2"
+  local commit="$3"
+
+  if git -C "$project" log -n 300 --grep="cherry picked from commit $commit" --format=%H | grep -q .; then
+    echo "SKIP (already applied): $project $commit"
+    return 0
   fi
+
+  git -C "$project" fetch "$repository" "$commit"
+
+  if git -C "$project" cherry-pick -x "$commit"; then
+    return 0
+  fi
+
+  if [ -n "$(git -C "$project" ls-files -u)" ]; then
+    git -C "$project" cherry-pick --abort
+    echo "ERROR: cherry-pick conflict in $project for $commit" >&2
+    return 1
+  fi
+
+  if git -C "$project" diff --cached --quiet; then
+    git -C "$project" cherry-pick --skip
+    echo "SKIP (patch has no remaining changes): $project $commit"
+    return 0
+  fi
+
+  git -C "$project" cherry-pick --abort || true
+  echo "ERROR: cherry-pick failed in $project for $commit" >&2
+  return 1
 }
 
 apply packages/apps/Aperture https://github.com/CMF-Phone-1/platform_packages_apps_Aperture 1c7dc37dd2721e5207d0eabe988b2c8acd8bf840
